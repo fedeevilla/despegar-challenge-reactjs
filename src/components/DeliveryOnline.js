@@ -6,6 +6,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
+import { connect } from "react-redux";
+import { addDelivery } from "./../redux/actions";
 
 class DeliveryOnline extends Component {
   constructor() {
@@ -25,10 +27,17 @@ class DeliveryOnline extends Component {
       email: ""
     };
   }
-  handleChange = name => event => {
+
+  handleChange = event => {
+    const name = event.target.name;
+
     this.setState({
       [name]: event.target.value
     });
+  };
+
+  handleSave = () => {
+    return this.props.addDelivery(this.state);
   };
 
   render() {
@@ -36,73 +45,78 @@ class DeliveryOnline extends Component {
       <div>
         <Grid>
           <Row>
-            <Col xs>
+            <Col md>
               <h2>Administrative Data</h2>
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="name"
+                name="name"
                 label="Name"
                 value={this.state.name}
-                onChange={this.handleChange("name")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="phone"
+                name="phone"
                 label="Phone"
                 value={this.state.phone}
-                onChange={this.handleChange("phone")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="description"
+                name="description"
                 label="Description"
                 multiline
                 rows="4"
                 rowsMax="4"
                 value={this.state.description}
-                onChange={this.handleChange("description")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="specialties"
+                name="specialties"
                 label="Specialties"
                 multiline
                 rows="4"
                 rowsMax="4"
                 value={this.state.specialties}
-                onChange={this.handleChange("specialties")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="address"
+                name="address"
                 label="Address"
                 value={this.state.address}
-                onChange={this.handleChange("address")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <FormControl>
                 <InputLabel htmlFor="open">Open</InputLabel>
                 <Select
@@ -132,7 +146,7 @@ class DeliveryOnline extends Component {
                 </Select>
               </FormControl>
             </Col>
-            <Col xs>
+            <Col md>
               <FormControl>
                 <InputLabel htmlFor="close">Close</InputLabel>
                 <Select
@@ -164,60 +178,68 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <h2>Commercial Contact</h2>
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="nameContact"
+                name="nameContact"
                 label="Name"
                 value={this.state.nameContact}
-                onChange={this.handleChange("nameContact")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="lastNameContact"
+                name="lastNameContact"
                 label="Last Name"
                 value={this.state.lastNameContact}
-                onChange={this.handleChange("lastNameContact")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="phoneContact"
+                name="phoneContact"
                 label="Phone"
                 value={this.state.phoneContact}
-                onChange={this.handleChange("phoneContact")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <TextField
                 id="email"
+                name="email"
                 label="Email"
                 value={this.state.email}
-                onChange={this.handleChange("email")}
+                onChange={this.handleChange}
                 margin="normal"
               />
             </Col>
           </Row>
           <Row>
-            <Col xs>
+            <Col md>
               <Button variant="contained" color="primary">
                 Cancel
               </Button>
-              <Button variant="contained" color="primary" disabled>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleSave}
+              >
                 Save
               </Button>
             </Col>
@@ -228,4 +250,21 @@ class DeliveryOnline extends Component {
   }
 }
 
-export default DeliveryOnline;
+const mapStateToProps = state => {
+  return {
+    deliveries: state.deliveries
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addDelivery(delivery) {
+      dispatch(addDelivery(delivery));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeliveryOnline);
