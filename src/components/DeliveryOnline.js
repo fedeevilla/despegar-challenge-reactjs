@@ -8,6 +8,7 @@ import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
 import { addDelivery } from "./../redux/actions";
+import { Link } from "react-router-dom";
 
 class DeliveryOnline extends Component {
   constructor() {
@@ -37,8 +38,14 @@ class DeliveryOnline extends Component {
   };
 
   handleSave = () => {
-    return this.props.addDelivery(this.state);
+    this.props.addDelivery(this.state);
   };
+
+  componentDidMount() {
+    if (this.props.match.params.id) {
+      alert(this.props.match.params.id);
+    }
+  }
 
   render() {
     return (
@@ -145,8 +152,6 @@ class DeliveryOnline extends Component {
                   <MenuItem value={23}>23hs</MenuItem>
                 </Select>
               </FormControl>
-            </Col>
-            <Col md>
               <FormControl>
                 <InputLabel htmlFor="close">Close</InputLabel>
                 <Select
@@ -232,13 +237,16 @@ class DeliveryOnline extends Component {
           </Row>
           <Row>
             <Col md>
-              <Button variant="contained" color="primary">
-                Cancel
-              </Button>
+              <Link to="/">
+                <Button variant="contained" color="primary">
+                  Cancel
+                </Button>
+              </Link>
+
               <Button
                 variant="contained"
                 color="primary"
-                onClick={this.handleSave}
+                onClick={() => this.handleSave()}
               >
                 Save
               </Button>
@@ -250,11 +258,9 @@ class DeliveryOnline extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    deliveries: state.deliveries
-  };
-};
+// const mapStateToProps = state => ({
+//   delivery: _.find(state, "id", this.props.match.params.idd)
+// });
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -265,6 +271,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(DeliveryOnline);

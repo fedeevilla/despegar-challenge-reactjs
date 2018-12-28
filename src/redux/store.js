@@ -1,37 +1,27 @@
 import { createStore, applyMiddleware } from "redux";
 
-const reducer = (state, action) => {
-  if (action.type === "ADD_DELIVERY") {
-    // var exist = false;
+// const saveState = data => {
+//   localStorage.setItem("deliverys", JSON.stringify(data));
+// };
 
-    // for (var i = 0; i < state.deliveries.length; i++) {
-    //   if (state.deliveries[i].id === action.delivery.id) {
-    //     exist = true;
-    //     break;
-    //   }
-    // }
-
-    // if (exist) {
-    //   return {
-    //     ...state,
-    //     cart: state.deliveries.map(d => {
-    //       if (d.id === action.d.id) {
-    //         d.qty++;
-    //       }
-    //       return d;
-    //     })
-    //   };
-    // }
-    // action.delivery.qty = 1;
+const reducer = (state = [], action) => {
+  if (action.type === "LOAD_DELIVERYS") {
+    try {
+      // return JSON.parse(localStorage.getItem("deliverys")) || [];
+    } catch (e) {
+      // return [];
+    }
+  } else if (action.type === "ADD_DELIVERY") {
+    action.delivery.id = action.id;
 
     return {
       ...state,
-      deliveries: state.deliveries.concat(action.delivery)
+      deliverys: state.deliverys.concat(action.delivery)
     };
   } else if (action.type === "REMOVE_DELIVERY") {
     return {
       ...state,
-      cart: state.deliveries.filter((d, id) => id !== action.id)
+      deliverys: state.deliverys.filter(delivery => delivery.id !== action.id)
     };
   }
 
@@ -40,12 +30,25 @@ const reducer = (state, action) => {
 
 const logger = store => next => action => {
   let result = next(action);
-  console.log(store.getState());
+  return result;
+};
+
+const updateLocalStorageDeliverys = store => next => action => {
+  let result = next(action);
+
+  if (action.type === "ADD_DELIVERY" || action.type === "REMOVE_DELIVERY") {
+    try {
+      // saveState(store.getState()["deliverys"]);
+    } catch (e) {
+      console.log("Error trying to set deliverys", e);
+      // saveState([]);
+    }
+  }
   return result;
 };
 
 export default createStore(
   reducer,
-  { deliveries: [] },
-  applyMiddleware(logger)
+  { deliverys: [] },
+  applyMiddleware(logger, updateLocalStorageDeliverys)
 );
