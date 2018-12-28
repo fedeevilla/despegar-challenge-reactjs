@@ -1,9 +1,6 @@
-let nextId = 1;
-
 export const addDelivery = delivery => {
   return {
     type: "ADD_DELIVERY",
-    id: nextId++,
     delivery
   };
 };
@@ -18,5 +15,12 @@ export const removeDelivery = id => {
 export const loadDeliverys = () => {
   return {
     type: "LOAD_DELIVERYS"
+  };
+};
+
+export const loadDelivery = id => {
+  return {
+    type: "LOAD_DELIVERY",
+    id
   };
 };

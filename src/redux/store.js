@@ -1,18 +1,38 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 
-// const saveState = data => {
-//   localStorage.setItem("deliverys", JSON.stringify(data));
-// };
+const saveState = data => {
+  localStorage.setItem("deliverys", JSON.stringify(data));
+};
+
+const maxID = state => {
+  let max = 0;
+  for (var i = 0; i < state.deliverys.length; i++) {
+    if (parseInt(state.deliverys[i].id) > max) {
+      max = parseInt(state.deliverys[i].id);
+    }
+  }
+  max++;
+  return max;
+};
 
 const reducer = (state = [], action) => {
-  if (action.type === "LOAD_DELIVERYS") {
+  if (action.type === "LOAD_DELIVERY") {
+    for (var i = 0; i < state.deliverys.length; i++) {
+      if (parseInt(state.deliverys[i].id) === parseInt(action.id)) {
+        return state.deliverys[i];
+      }
+    }
+  } else if (action.type === "LOAD_DELIVERYS") {
     try {
-      // return JSON.parse(localStorage.getItem("deliverys")) || [];
+      return {
+        ...state,
+        deliverys: JSON.parse(localStorage.getItem("deliverys")) || []
+      };
     } catch (e) {
-      // return [];
+      return [];
     }
   } else if (action.type === "ADD_DELIVERY") {
-    action.delivery.id = action.id;
+    action.delivery.id = maxID(state);
 
     return {
       ...state,
@@ -38,17 +58,18 @@ const updateLocalStorageDeliverys = store => next => action => {
 
   if (action.type === "ADD_DELIVERY" || action.type === "REMOVE_DELIVERY") {
     try {
-      // saveState(store.getState()["deliverys"]);
+      saveState(store.getState()["deliverys"]);
     } catch (e) {
       console.log("Error trying to set deliverys", e);
-      // saveState([]);
+      saveState([]);
     }
   }
   return result;
 };
 
-export default createStore(
-  reducer,
-  { deliverys: [] },
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const enhancer = composeEnhancers(
   applyMiddleware(logger, updateLocalStorageDeliverys)
 );
+
+export default createStore(reducer, { deliverys: [] }, enhancer);

@@ -1,5 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -13,7 +12,7 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
-import { removeDelivery } from "./../redux/actions";
+import { removeDelivery, loadDeliverys } from "./../redux/actions";
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -25,89 +24,77 @@ const CustomTableCell = withStyles(theme => ({
   }
 }))(TableCell);
 
-const styles = theme => ({
-  root: {
-    width: "100%",
-    marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
-  },
-  table: {
-    minWidth: 700
-  },
-  row: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.background.default
-    }
+class TableSearch extends Component {
+  componentDidMount() {
+    this.props.loadDeliverys();
   }
-});
 
-function TableSearch(props) {
-  const { classes } = props;
+  render() {
+    return (
+      <Grid>
+        <Row middle="xs">
+          <Col xs={6}>
+            <h1>Filters here!</h1>
+          </Col>
+          <Col xs={6}>
+            <Link to="/create">
+              <Button variant="contained" color="primary">
+                Create
+              </Button>
+            </Link>
+          </Col>
+        </Row>
 
-  return (
-    <Grid>
-      <Row>
-        <Col xs>
-          <Link to="/create">
-            <Button variant="contained" color="primary">
-              Create
-            </Button>
-          </Link>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col xs>
-          <Paper className={classes.root}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <CustomTableCell>Name</CustomTableCell>
-                  <CustomTableCell align="right">Address</CustomTableCell>
-                  <CustomTableCell align="right">Phone</CustomTableCell>
-                  <CustomTableCell align="right">Actions</CustomTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {props.deliverys &&
-                  props.deliverys.map(row => {
-                    return (
-                      <TableRow className={classes.row} key={row.id}>
-                        <CustomTableCell component="th" scope="row">
-                          {row.name}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          {row.address}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          {row.phone}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          <Button onClick={() => props.removeDelivery(row.id)}>
-                            <DeleteOutlinedIcon color="primary" />
-                          </Button>
-                          <Button>
-                            <Link to={`/update/${row.id}`}>
-                              <EditIcon color="primary" />
-                            </Link>
-                          </Button>
-                        </CustomTableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Col>
-      </Row>
-    </Grid>
-  );
+        <Row>
+          <Col xs={12}>
+            <Paper>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <CustomTableCell>Name</CustomTableCell>
+                    <CustomTableCell align="right">Address</CustomTableCell>
+                    <CustomTableCell align="right">Phone</CustomTableCell>
+                    <CustomTableCell align="right">Actions</CustomTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.deliverys &&
+                    this.props.deliverys.map(row => {
+                      return (
+                        <TableRow key={row.id}>
+                          <CustomTableCell component="th" scope="row">
+                            {row.name}
+                          </CustomTableCell>
+                          <CustomTableCell align="right">
+                            {row.address}
+                          </CustomTableCell>
+                          <CustomTableCell align="right">
+                            {row.phone}
+                          </CustomTableCell>
+                          <CustomTableCell align="right">
+                            <Button>
+                              <Link to={`/update/${row.id}`}>
+                                <EditIcon color="primary" />
+                              </Link>
+                            </Button>
+                            <Button
+                              onClick={() => this.props.removeDelivery(row.id)}
+                            >
+                              <DeleteOutlinedIcon color="primary" />
+                            </Button>
+                          </CustomTableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </Paper>
+          </Col>
+        </Row>
+      </Grid>
+    );
+  }
 }
-
-TableSearch.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
 const mapStateToProps = state => {
   return {
     deliverys: state.deliverys
@@ -116,11 +103,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // addDelivery(delivery) {
-    //   dispatch(addDelivery(delivery));
-    // }
     removeDelivery(id) {
       dispatch(removeDelivery(id));
+    },
+    loadDeliverys() {
+      dispatch(loadDeliverys());
     }
   };
 };
@@ -128,4 +115,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(TableSearch));
+)(TableSearch);
