@@ -7,8 +7,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
-import { addDelivery, loadDelivery } from "./../redux/actions";
-import { Link } from "react-router-dom";
+import { addDelivery, loadDelivery, loadDeliverys } from "./../redux/actions";
+import { withRouter } from "react-router-dom";
 
 class DeliveryOnline extends Component {
   constructor() {
@@ -39,12 +39,17 @@ class DeliveryOnline extends Component {
 
   handleSave = () => {
     this.props.addDelivery(this.state);
+    this.props.history.push("/");
+  };
+
+  handleBack = () => {
+    this.props.loadDeliverys();
+    this.props.history.push("/");
   };
 
   componentDidMount() {
     if (this.props.match.params.id !== undefined) {
       this.props.loadDelivery(this.props.match.params.id);
-      debugger;
     }
   }
 
@@ -53,12 +58,12 @@ class DeliveryOnline extends Component {
       <div>
         <Grid>
           <Row>
-            <Col md>
+            <Col md={12}>
               <h2>Administrative Data</h2>
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="name"
                 name="name"
@@ -70,7 +75,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="phone"
                 name="phone"
@@ -82,7 +87,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="description"
                 name="description"
@@ -97,7 +102,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="specialties"
                 name="specialties"
@@ -112,7 +117,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="address"
                 name="address"
@@ -124,7 +129,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <FormControl>
                 <InputLabel htmlFor="open">Open</InputLabel>
                 <Select
@@ -184,12 +189,12 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <h2>Commercial Contact</h2>
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="nameContact"
                 name="nameContact"
@@ -201,7 +206,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="lastNameContact"
                 name="lastNameContact"
@@ -213,7 +218,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="phoneContact"
                 name="phoneContact"
@@ -225,7 +230,7 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
+            <Col md={12}>
               <TextField
                 id="email"
                 name="email"
@@ -237,12 +242,14 @@ class DeliveryOnline extends Component {
             </Col>
           </Row>
           <Row>
-            <Col md>
-              <Link to="/">
-                <Button variant="contained" color="primary">
-                  Cancel
-                </Button>
-              </Link>
+            <Col md={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => this.handleBack()}
+              >
+                Cancel
+              </Button>
 
               <Button
                 variant="contained"
@@ -270,11 +277,16 @@ const mapDispatchToProps = dispatch => {
     },
     loadDelivery(id) {
       dispatch(loadDelivery(id));
+    },
+    loadDeliverys() {
+      dispatch(loadDeliverys());
     }
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(DeliveryOnline);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(DeliveryOnline)
+);
