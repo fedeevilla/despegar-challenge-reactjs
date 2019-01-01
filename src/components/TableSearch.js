@@ -14,7 +14,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import TextField from "@material-ui/core/TextField";
 import { removeDelivery, loadDeliverys } from "./../redux/actions";
-
+import _ from "lodash";
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -27,19 +27,31 @@ const CustomTableCell = withStyles(theme => ({
 }))(TableCell);
 
 class TableSearch extends Component {
-  componentDidMount() {
-    this.props.loadDeliverys();
+  constructor() {
+    super();
+
+    this.state = {
+      showing: []
+    };
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   prevProps.loadDeliverys();
-  // }
+  filterByTerm = value => {
+    // console.log(this.props.deliverys);
+    const data = this.props.deliverys;
+    let newDisplay = _.filter(data, d =>
+      d.name.toLowerCase().includes(value.toLowerCase())
+    );
 
-  // handleSearch = event => {
-  //   this.props.showing = this.props.deliverys.filter(e => {
-  //     return e.name.toLowerCase().includes(event.target.value.toLowerCase());
-  //   });
-  // };
+    this.setState({
+      showing: newDisplay
+    });
+  };
+  componentDidMount() {
+    this.props.loadDeliverys();
+    this.setState({
+      showing: JSON.parse(localStorage.getItem("deliverys")) || []
+    });
+  }
 
   renderSearch = () => {
     return (
@@ -49,7 +61,7 @@ class TableSearch extends Component {
         type="search"
         margin="normal"
         variant="outlined"
-        onChange={event => this.handleSearch(event)}
+        onChange={event => this.filterByTerm(event.target.value)}
       />
     );
   };
@@ -86,33 +98,34 @@ class TableSearch extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.props.deliverys.map(row => {
-                  return (
-                    <TableRow key={row.id}>
-                      <CustomTableCell component="th" scope="row">
-                        {row.name}
-                      </CustomTableCell>
-                      <CustomTableCell align="right">
-                        {row.address}
-                      </CustomTableCell>
-                      <CustomTableCell align="right">
-                        {row.phone}
-                      </CustomTableCell>
-                      <CustomTableCell align="right">
-                        <Button>
-                          <Link to={`/update/${row.id}`}>
-                            <EditIcon color="primary" />
-                          </Link>
-                        </Button>
-                        <Button
-                          onClick={() => this.props.removeDelivery(row.id)}
-                        >
-                          <DeleteOutlinedIcon color="primary" />
-                        </Button>
-                      </CustomTableCell>
-                    </TableRow>
-                  );
-                })}
+                {this.state.showing &&
+                  this.state.showing.map(row => {
+                    return (
+                      <TableRow key={row.id}>
+                        <CustomTableCell component="th" scope="row">
+                          {row.name}
+                        </CustomTableCell>
+                        <CustomTableCell align="right">
+                          {row.address}
+                        </CustomTableCell>
+                        <CustomTableCell align="right">
+                          {row.phone}
+                        </CustomTableCell>
+                        <CustomTableCell align="right">
+                          <Button>
+                            <Link to={`/update/${row.id}`}>
+                              <EditIcon color="primary" />
+                            </Link>
+                          </Button>
+                          <Button
+                            onClick={() => this.props.removeDelivery(row.id)}
+                          >
+                            <DeleteOutlinedIcon color="primary" />
+                          </Button>
+                        </CustomTableCell>
+                      </TableRow>
+                    );
+                  })}
               </TableBody>
             </Table>
           </Paper>
