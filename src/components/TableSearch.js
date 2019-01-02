@@ -14,7 +14,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import TextField from "@material-ui/core/TextField";
 import { removeDelivery, loadDeliverys } from "./../redux/actions";
-import _ from "lodash";
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -36,16 +36,20 @@ class TableSearch extends Component {
   }
 
   filterByTerm = value => {
-    // console.log(this.props.deliverys);
     const data = this.props.deliverys;
-    let newDisplay = _.filter(data, d =>
-      d.name.toLowerCase().includes(value.toLowerCase())
+    let newDisplay = data.filter(d =>
+      d.name
+        .toLowerCase()
+        .concat(d.address.toLowerCase())
+        .concat(d.phone.toLowerCase())
+        .includes(value.toLowerCase())
     );
 
     this.setState({
       showing: newDisplay
     });
   };
+
   componentDidMount() {
     this.props.loadDeliverys();
     this.setState({
@@ -64,6 +68,14 @@ class TableSearch extends Component {
         onChange={event => this.filterByTerm(event.target.value)}
       />
     );
+  };
+
+  handleRemove = id => {
+    this.props.removeDelivery(id);
+    this.props.loadDeliverys();
+    this.setState({
+      showing: JSON.parse(localStorage.getItem("deliverys")) || []
+    });
   };
 
   renderHeader = () => {
@@ -117,9 +129,7 @@ class TableSearch extends Component {
                               <EditIcon color="primary" />
                             </Link>
                           </Button>
-                          <Button
-                            onClick={() => this.props.removeDelivery(row.id)}
-                          >
+                          <Button onClick={() => this.handleRemove(row.id)}>
                             <DeleteOutlinedIcon color="primary" />
                           </Button>
                         </CustomTableCell>

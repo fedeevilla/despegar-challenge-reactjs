@@ -10,11 +10,16 @@ import { connect } from "react-redux";
 import { addDelivery, loadDelivery, loadDeliverys } from "./../redux/actions";
 import { withRouter } from "react-router-dom";
 
+const data = [];
+
 class DeliveryOnline extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.props.loadDelivery(this.props.match.params.id);
 
     this.state = {
+      delivery: [],
       name: "",
       phone: "",
       description: "",
@@ -49,7 +54,7 @@ class DeliveryOnline extends Component {
 
   componentDidMount() {
     if (this.props.match.params.id !== undefined) {
-      this.props.loadDelivery(this.props.match.params.id);
+      console.log(this.state.delivery);
     }
   }
 
@@ -266,9 +271,9 @@ class DeliveryOnline extends Component {
   }
 }
 
-// const mapStateToProps = state => ({
-//   delivery: _.find(state, "id", this.props.match.params.idd)
-// });
+const mapStateToProps = state => ({
+  delivery: state.delivery
+});
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -286,7 +291,7 @@ const mapDispatchToProps = dispatch => {
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(DeliveryOnline)
 );
