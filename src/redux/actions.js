@@ -5,6 +5,14 @@ export const addDelivery = delivery => {
   };
 };
 
+export const updateDelivery = (id, delivery) => {
+  return {
+    type: "UPDATE_DELIVERY",
+    id,
+    delivery
+  };
+};
+
 export const removeDelivery = id => {
   return {
     type: "REMOVE_DELIVERY",

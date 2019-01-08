@@ -15,7 +15,7 @@ const maxID = state => {
   return max;
 };
 
-const reducer = (state = [], action) => {
+const deliverys = (state = [], action) => {
   if (action.type === "LOAD_DELIVERY") {
     for (var i = 0; i < state.deliverys.length; i++) {
       if (parseInt(state.deliverys[i].id) === parseInt(action.id)) {
@@ -38,6 +38,19 @@ const reducer = (state = [], action) => {
       ...state,
       deliverys: state.deliverys.concat(action.delivery)
     };
+  } else if (action.type === "UPDATE_DELIVERY") {
+    return {
+      ...state,
+      deliverys: state.deliverys.map(item => {
+        if (parseInt(item.id) !== parseInt(action.id)) {
+          return item;
+        }
+        return {
+          ...item,
+          ...action.delivery
+        };
+      })
+    };
   } else if (action.type === "REMOVE_DELIVERY") {
     return {
       ...state,
@@ -56,7 +69,11 @@ const logger = store => next => action => {
 const updateLocalStorageDeliverys = store => next => action => {
   let result = next(action);
 
-  if (action.type === "ADD_DELIVERY" || action.type === "REMOVE_DELIVERY") {
+  if (
+    action.type === "ADD_DELIVERY" ||
+    action.type === "REMOVE_DELIVERY" ||
+    action.type === "UPDATE_DELIVERY"
+  ) {
     try {
       saveState(store.getState()["deliverys"]);
     } catch (e) {
@@ -72,4 +89,4 @@ const enhancer = composeEnhancers(
   applyMiddleware(logger, updateLocalStorageDeliverys)
 );
 
-export default createStore(reducer, { deliverys: [] }, enhancer);
+export default createStore(deliverys, { deliverys: [] }, enhancer);

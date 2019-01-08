@@ -13,7 +13,10 @@ class App extends Component {
           <Header />
           <Route path="/" exact component={TableSearch} />
           <Route path="/create/" component={DeliveryOnline} />
-          <Route path="/update/:id" component={DeliveryOnline} />
+          <Route
+            path="/update/:id"
+            render={props => <DeliveryOnline id={props.match.params.id} />}
+          />
         </div>
       </BrowserRouter>
     );

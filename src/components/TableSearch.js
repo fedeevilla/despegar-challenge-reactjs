@@ -35,20 +35,9 @@ class TableSearch extends Component {
     };
   }
 
-  filterByTerm = value => {
-    const data = this.props.deliverys;
-    let newDisplay = data.filter(d =>
-      d.name
-        .toLowerCase()
-        .concat(d.address.toLowerCase())
-        .concat(d.phone.toLowerCase())
-        .includes(value.toLowerCase())
-    );
-
-    this.setState({
-      showing: newDisplay
-    });
-  };
+  dismiss() {
+    this.props.unmountMe();
+  }
 
   componentDidMount() {
     this.props.loadDeliverys();
@@ -56,6 +45,29 @@ class TableSearch extends Component {
       showing: JSON.parse(localStorage.getItem("deliverys")) || []
     });
   }
+
+  filterByTerm = value => {
+    const data = this.props.deliverys;
+    let newDisplay = data.filter(d =>
+      d.name
+        .toLowerCase()
+        .concat(d.address.toLowerCase().trim())
+        .concat(d.phone.toLowerCase().trim())
+        .includes(value.toLowerCase().trim())
+    );
+
+    this.setState({
+      showing: newDisplay
+    });
+  };
+
+  handleRemove = id => {
+    this.props.removeDelivery(id);
+    this.props.loadDeliverys();
+    this.setState({
+      showing: JSON.parse(localStorage.getItem("deliverys")) || []
+    });
+  };
 
   renderSearch = () => {
     return (
@@ -68,14 +80,6 @@ class TableSearch extends Component {
         onChange={event => this.filterByTerm(event.target.value)}
       />
     );
-  };
-
-  handleRemove = id => {
-    this.props.removeDelivery(id);
-    this.props.loadDeliverys();
-    this.setState({
-      showing: JSON.parse(localStorage.getItem("deliverys")) || []
-    });
   };
 
   renderHeader = () => {

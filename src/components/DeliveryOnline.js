@@ -7,19 +7,15 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
-import { addDelivery, loadDelivery, loadDeliverys } from "./../redux/actions";
+import { addDelivery, updateDelivery } from "./../redux/actions";
 import { withRouter } from "react-router-dom";
-
-const data = [];
 
 class DeliveryOnline extends Component {
   constructor(props) {
     super(props);
 
-    this.props.loadDelivery(this.props.match.params.id);
-
     this.state = {
-      delivery: [],
+      delivery: {},
       name: "",
       phone: "",
       description: "",
@@ -34,29 +30,41 @@ class DeliveryOnline extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      name: this.props.delivery.name || "",
+      phone: this.props.delivery.phone || "",
+      description: this.props.delivery.description || "",
+      specialties: this.props.delivery.specialties || "",
+      address: this.props.delivery.address || "",
+      open: this.props.delivery.open || "",
+      close: this.props.delivery.close || "",
+      nameContact: this.props.delivery.nameContact || "",
+      lastNameContact: this.props.delivery.lastNameContact || "",
+      phoneContact: this.props.delivery.phoneContact || "",
+      email: this.props.delivery.email || ""
+    });
+  }
+
   handleChange = event => {
     const name = event.target.name;
-
     this.setState({
       [name]: event.target.value
     });
   };
 
   handleSave = () => {
-    this.props.addDelivery(this.state);
+    if (!this.props.id) {
+      this.props.addDelivery(this.state);
+    } else {
+      this.props.updateDelivery(this.props.id, this.state);
+    }
     this.props.history.push("/");
   };
 
   handleBack = () => {
-    this.props.loadDeliverys();
     this.props.history.push("/");
   };
-
-  componentDidMount() {
-    if (this.props.match.params.id !== undefined) {
-      console.log(this.state.delivery);
-    }
-  }
 
   render() {
     return (
@@ -115,7 +123,7 @@ class DeliveryOnline extends Component {
                 multiline
                 rows="4"
                 rowsMax="4"
-                value={this.state.specialties}
+                value={this.props.specialties}
                 onChange={this.handleChange}
                 margin="normal"
               />
@@ -271,8 +279,12 @@ class DeliveryOnline extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  delivery: state.delivery
+DeliveryOnline.defaultProps = {
+  delivery: {}
+};
+
+const mapStateToProps = (state, props) => ({
+  delivery: state.deliverys.find(d => parseInt(d.id) === parseInt(props.id))
 });
 
 const mapDispatchToProps = dispatch => {
@@ -280,11 +292,8 @@ const mapDispatchToProps = dispatch => {
     addDelivery(delivery) {
       dispatch(addDelivery(delivery));
     },
-    loadDelivery(id) {
-      dispatch(loadDelivery(id));
-    },
-    loadDeliverys() {
-      dispatch(loadDeliverys());
+    updateDelivery(id, delivery) {
+      dispatch(updateDelivery(id, delivery));
     }
   };
 };
