@@ -25,10 +25,3 @@ export const loadDeliverys = () => {
     type: "LOAD_DELIVERYS"
   };
 };
-
-export const loadDelivery = id => {
-  return {
-    type: "LOAD_DELIVERY",
-    id
-  };
-};

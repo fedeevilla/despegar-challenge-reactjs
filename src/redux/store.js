@@ -16,13 +16,7 @@ const maxID = state => {
 };
 
 const deliverys = (state = [], action) => {
-  if (action.type === "LOAD_DELIVERY") {
-    for (var i = 0; i < state.deliverys.length; i++) {
-      if (parseInt(state.deliverys[i].id) === parseInt(action.id)) {
-        return state.deliverys[i];
-      }
-    }
-  } else if (action.type === "LOAD_DELIVERYS") {
+  if (action.type === "LOAD_DELIVERYS") {
     try {
       return {
         ...state,
