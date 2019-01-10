@@ -9,12 +9,21 @@ import { addDelivery, updateDelivery } from "./../redux/actions";
 import { withRouter } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {
   ValidatorForm,
   TextValidator,
   SelectValidator
 } from "react-material-ui-form-validator";
+
+const styles = {
+  paper: {
+    marginRight: "10%",
+    marginLeft: "10%",
+    marginTop: 40
+  }
+};
 
 class DeliveryOnline extends Component {
   constructor(props) {
@@ -32,7 +41,8 @@ class DeliveryOnline extends Component {
       nameContact: "",
       lastNameContact: "",
       phoneContact: "",
-      email: ""
+      email: "",
+      check: false
     };
   }
 
@@ -48,22 +58,30 @@ class DeliveryOnline extends Component {
       nameContact: this.props.delivery.nameContact || "",
       lastNameContact: this.props.delivery.lastNameContact || "",
       phoneContact: this.props.delivery.phoneContact || "",
-      email: this.props.delivery.email || ""
+      email: this.props.delivery.email || "",
+      check: this.props.delivery.check || false
     });
   }
 
   handleChange = event => {
     const name = event.target.name;
-    this.setState({
-      [name]: event.target.value
-    });
+
+    if (name === "check") {
+      this.setState({
+        [name]: event.target.checked
+      });
+    } else {
+      this.setState({
+        [name]: event.target.value
+      });
+    }
   };
 
   handleSave = () => {
-    if (!this.props.id) {
-      this.props.addDelivery(this.state);
-    } else {
+    if (this.props.id) {
       this.props.updateDelivery(this.props.id, this.state);
+    } else {
+      this.props.addDelivery(this.state);
     }
     this.props.history.push("/");
   };
@@ -72,17 +90,72 @@ class DeliveryOnline extends Component {
     this.props.history.push("/");
   };
 
+  renderCommercialContact = () => {
+    return (
+      <React.Fragment>
+        <Grid item xs={12}>
+          <TextValidator
+            id="nameContact"
+            name="nameContact"
+            label="Name"
+            fullWidth
+            variant="outlined"
+            value={this.state.nameContact}
+            onChange={this.handleChange}
+            margin="normal"
+            validators={["required"]}
+            errorMessages={["this field is required"]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextValidator
+            id="lastNameContact"
+            name="lastNameContact"
+            label="Last Name"
+            fullWidth
+            variant="outlined"
+            value={this.state.lastNameContact}
+            onChange={this.handleChange}
+            margin="normal"
+            validators={["required"]}
+            errorMessages={["this field is required"]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextValidator
+            id="phoneContact"
+            name="phoneContact"
+            label="Phone"
+            fullWidth
+            variant="outlined"
+            value={this.state.phoneContact}
+            onChange={this.handleChange}
+            margin="normal"
+            validators={["required"]}
+            errorMessages={["this field is required"]}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextValidator
+            id="email"
+            name="email"
+            label="Email"
+            fullWidth
+            variant="outlined"
+            value={this.state.email}
+            onChange={this.handleChange}
+            margin="normal"
+            validators={["required", "isEmail"]}
+            errorMessages={["this field is required", "email is not valid"]}
+          />
+        </Grid>
+      </React.Fragment>
+    );
+  };
   render() {
     return (
       <React.Fragment>
-        <Paper
-          elevation={1}
-          style={{
-            marginRight: "10%",
-            marginLeft: "10%",
-            marginTop: 40
-          }}
-        >
+        <Paper elevation={5} style={styles.paper}>
           <ValidatorForm
             style={{ margin: 25 }}
             ref="form"
@@ -247,61 +320,20 @@ class DeliveryOnline extends Component {
               Commercial Contact
             </Typography>
             <Grid item xs={12}>
-              <TextValidator
-                id="nameContact"
-                name="nameContact"
-                label="Name"
-                fullWidth
-                variant="outlined"
-                value={this.state.nameContact}
-                onChange={this.handleChange}
-                margin="normal"
-                validators={["required"]}
-                errorMessages={["this field is required"]}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.check}
+                    name="check"
+                    id="check"
+                    value={this.state.check}
+                    onChange={this.handleChange}
+                  />
+                }
+                label="Idem Administrative Contact"
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextValidator
-                id="lastNameContact"
-                name="lastNameContact"
-                label="Last Name"
-                fullWidth
-                variant="outlined"
-                value={this.state.lastNameContact}
-                onChange={this.handleChange}
-                margin="normal"
-                validators={["required"]}
-                errorMessages={["this field is required"]}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextValidator
-                id="phoneContact"
-                name="phoneContact"
-                label="Phone"
-                fullWidth
-                variant="outlined"
-                value={this.state.phoneContact}
-                onChange={this.handleChange}
-                margin="normal"
-                validators={["required"]}
-                errorMessages={["this field is required"]}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextValidator
-                id="email"
-                name="email"
-                label="Email"
-                fullWidth
-                variant="outlined"
-                value={this.state.email}
-                onChange={this.handleChange}
-                margin="normal"
-                validators={["required"]}
-                errorMessages={["this field is required"]}
-              />
-            </Grid>
+            {this.state.check && this.renderCommercialContact()}
             <Grid item xs={12}>
               <Button
                 variant="contained"
