@@ -73,7 +73,7 @@ class TableSearch extends Component {
     return (
       <TextField
         id="outlined-search"
-        label="Search by Name"
+        label="Search by term"
         type="search"
         margin="normal"
         variant="outlined"
@@ -101,50 +101,48 @@ class TableSearch extends Component {
 
   renderTable = () => {
     return (
-      <Row>
-        <Col xs={12}>
-          <Paper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <CustomTableCell>Name</CustomTableCell>
-                  <CustomTableCell align="right">Address</CustomTableCell>
-                  <CustomTableCell align="right">Phone</CustomTableCell>
-                  <CustomTableCell align="right">Actions</CustomTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.showing &&
-                  this.state.showing.map(row => {
-                    return (
-                      <TableRow key={row.id}>
-                        <CustomTableCell component="th" scope="row">
-                          {row.name}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          {row.address}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          {row.phone}
-                        </CustomTableCell>
-                        <CustomTableCell align="right">
-                          <Button>
-                            <Link to={`/update/${row.id}`}>
-                              <EditIcon color="primary" />
-                            </Link>
-                          </Button>
-                          <Button onClick={() => this.handleRemove(row.id)}>
-                            <DeleteOutlinedIcon color="primary" />
-                          </Button>
-                        </CustomTableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Col>
-      </Row>
+      <Grid item xs={12}>
+        <Paper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <CustomTableCell>Name</CustomTableCell>
+                <CustomTableCell align="right">Address</CustomTableCell>
+                <CustomTableCell align="right">Phone</CustomTableCell>
+                <CustomTableCell align="right">Actions</CustomTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.showing &&
+                this.state.showing.map(row => {
+                  return (
+                    <TableRow key={row.id}>
+                      <CustomTableCell component="th" scope="row">
+                        {row.name}
+                      </CustomTableCell>
+                      <CustomTableCell align="right">
+                        {row.address}
+                      </CustomTableCell>
+                      <CustomTableCell align="right">
+                        {row.phone}
+                      </CustomTableCell>
+                      <CustomTableCell align="right">
+                        <Button>
+                          <Link to={`/update/${row.id}`}>
+                            <EditIcon color="primary" />
+                          </Link>
+                        </Button>
+                        <Button onClick={() => this.handleRemove(row.id)}>
+                          <DeleteOutlinedIcon color="primary" />
+                        </Button>
+                      </CustomTableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Grid>
     );
   };
 
