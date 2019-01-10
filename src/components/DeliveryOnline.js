@@ -337,8 +337,9 @@ class DeliveryOnline extends Component {
             <Grid item xs={12}>
               <Button
                 variant="contained"
-                color="primary"
+                color="secondary"
                 onClick={() => this.handleBack()}
+                style={{ marginBottom: 20 }}
               >
                 Cancel
               </Button>
@@ -347,7 +348,7 @@ class DeliveryOnline extends Component {
                 variant="contained"
                 color="primary"
                 type="submit"
-                style={{ marginLeft: 20 }}
+                style={{ marginLeft: 20, marginBottom: 20 }}
                 // onClick={() => this.handleSave()}
               >
                 Save

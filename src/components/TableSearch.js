@@ -35,9 +35,9 @@ class TableSearch extends Component {
     };
   }
 
-  dismiss() {
-    this.props.unmountMe();
-  }
+  // dismiss() {
+  //   this.props.unmountMe();
+  // }
 
   componentDidMount() {
     this.props.loadDeliverys();
@@ -63,7 +63,7 @@ class TableSearch extends Component {
 
   handleRemove = id => {
     this.props.removeDelivery(id);
-    this.props.loadDeliverys();
+    //this.props.loadDeliverys();
     this.setState({
       showing: JSON.parse(localStorage.getItem("deliverys")) || []
     });
@@ -72,11 +72,13 @@ class TableSearch extends Component {
   renderSearch = () => {
     return (
       <TextField
+        fullWidth
         id="outlined-search"
         label="Search by term"
         type="search"
         margin="normal"
         variant="outlined"
+        style={{ marginLeft: 25, marginBottom: 20, marginTop: 30 }}
         onChange={event => this.filterByTerm(event.target.value)}
       />
     );
